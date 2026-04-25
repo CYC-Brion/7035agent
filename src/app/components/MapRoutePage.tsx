@@ -1,9 +1,5 @@
 import { useState } from 'react';
-import { Sparkles, ArrowLeft, Navigation, Info } from 'lucide-react';
-import { DaySelector } from './DaySelector';
-import { RouteList } from './RouteList';
-import { MapCanvas } from './MapCanvas';
-import { LocationCard } from './LocationCard';
+import { ArrowLeft, Navigation, Info, Phone, MapPin, Clock, PawPrint, Building2, Shield, AlertCircle, Play, X, Star, ChevronRight } from 'lucide-react';
 
 interface MapRoutePageProps {
   onNavigate?: (view: string) => void;
@@ -11,250 +7,425 @@ interface MapRoutePageProps {
 
 export function MapRoutePage({ onNavigate }: MapRoutePageProps) {
   const [selectedDay, setSelectedDay] = useState(1);
-  const [selectedPlan, setSelectedPlan] = useState<'luxury' | 'comfort' | 'budget'>('comfort');
-  const [selectedLocation, setSelectedLocation] = useState<any>(null);
+  const [selectedPOI, setSelectedPOI] = useState<any>(null);
+  const [showHospitalPanel, setShowHospitalPanel] = useState(false);
 
-  const routeData = {
-    day1: {
-      locations: [
-        {
-          id: 'start',
-          type: 'start',
-          name: '上海出发点',
-          address: '上海市浦东新区',
-          time: '09:00',
-          position: { x: 15, y: 50 },
-        },
-        {
-          id: 'hotel1',
-          type: 'hotel',
-          name: '西湖宠物友好酒店',
-          address: '杭州市西湖区北山街道88号',
-          time: '11:30',
-          rating: 4.8,
-          price: '¥680/晚',
-          hours: '24小时',
-          petFriendly: true,
-          position: { x: 40, y: 45 },
-          features: ['宠物欢迎礼包', '宠物床垫', '24小时前台'],
-          reviews: '酒店对宠物非常友好，房间整洁，服务周到',
-        },
-        {
-          id: 'spot1',
-          type: 'spot',
-          name: '西湖苏堤',
-          address: '杭州市西湖区苏堤',
-          time: '14:00',
-          rating: 4.9,
-          price: '免费',
-          hours: '全天开放',
-          petFriendly: true,
-          position: { x: 45, y: 52 },
-          features: ['宠物可入园', '饮水点', '遮阴区'],
-          reviews: '景色优美，适合遛狗，有专门的宠物活动区域',
-        },
-        {
-          id: 'hospital1',
-          type: 'pet-hospital',
-          name: '杭州宠颐生24小时动物医院',
-          address: '杭州市西湖区文二西路',
-          time: '沿途备用',
-          rating: 4.7,
-          hours: '24小时营业',
-          position: { x: 42, y: 38 },
-          features: ['24小时急诊', '宠物ICU', '专业医师'],
-          reviews: '设施完善，医生专业，应急首选',
-        },
-        {
-          id: 'cafe1',
-          type: 'restaurant',
-          name: '湖畔宠物友好咖啡馆',
-          address: '杭州市西湖区湖滨路',
-          time: '16:30',
-          rating: 4.6,
-          price: '¥80/人',
-          hours: '10:00-22:00',
-          petFriendly: true,
-          position: { x: 48, y: 48 },
-          features: ['宠物餐点', '户外座位', '宠物玩具'],
-          reviews: '环境优雅，宠物可以在户外区域休息',
-        },
-      ],
-    },
-    day2: {
-      locations: [
-        {
-          id: 'spot2',
-          type: 'spot',
-          name: '太子湾公园',
-          address: '杭州市西湖区南山路',
-          time: '08:30',
-          rating: 4.8,
-          price: '免费',
-          hours: '06:00-18:00',
-          petFriendly: true,
-          position: { x: 50, y: 58 },
-          features: ['花海景观', '宠物可入园', '拍照圣地'],
-          reviews: '春季樱花盛开，是带宠物拍照的好地方',
-        },
-        {
-          id: 'spot3',
-          type: 'spot',
-          name: '云栖竹径',
-          address: '杭州市西湖区云栖路',
-          time: '15:00',
-          rating: 4.7,
-          price: '¥20',
-          hours: '08:00-17:00',
-          petFriendly: true,
-          position: { x: 65, y: 45 },
-          features: ['竹林小径', '阴凉舒适', '宠物友好'],
-          reviews: '竹林深处很凉快，狗狗很喜欢',
-        },
-        {
-          id: 'hospital2',
-          type: 'pet-hospital',
-          name: '云栖宠物医院',
-          address: '杭州市西湖区云栖小镇',
-          time: '沿途备用',
-          rating: 4.5,
-          hours: '09:00-21:00',
-          position: { x: 68, y: 50 },
-          features: ['常规诊疗', '疫苗接种', '宠物美容'],
-          reviews: '环境干净，价格合理',
-        },
-      ],
-    },
-    day3: {
-      locations: [
-        {
-          id: 'spot4',
-          type: 'spot',
-          name: '龙井村',
-          address: '杭州市西湖区龙井路',
-          time: '09:00',
-          rating: 4.8,
-          price: '免费',
-          hours: '全天开放',
-          petFriendly: true,
-          position: { x: 55, y: 40 },
-          features: ['茶园步道', '宠物可入', '自然风光'],
-          reviews: '茶香四溢，可以带狗狗在茶园散步',
-        },
-        {
-          id: 'end',
-          type: 'end',
-          name: '返回上海',
-          address: '杭州→上海',
-          time: '13:30',
-          position: { x: 80, y: 50 },
-        },
-      ],
-    },
+  const days = [
+    { day: 1, date: 'May 15, 2026', label: 'Day 1' },
+    { day: 2, date: 'May 16, 2026', label: 'Day 2' },
+    { day: 3, date: 'May 17, 2026', label: 'Day 3' },
+  ];
+
+  const routes: Record<number, any[]> = {
+    1: [
+      { id: 1, time: '09:00', name: 'Depart Shanghai', type: 'start', duration: '2 hrs', distance: '180 km', x: 15, y: 50 },
+      { id: 2, time: '11:30', name: 'Check-in: West Lake Pet Hotel', type: 'hotel', petPolicy: 'Friendly', hours: '24 hours', phone: '+86 571-8888-1111', description: 'Modern pet-friendly hotel with welcome packages for pets. Clean rooms and excellent service.', x: 45, y: 45 },
+      { id: 3, time: '14:00', name: 'Su Causeway Walk', type: 'attraction', duration: '2 hrs', distance: '3 km', petPolicy: 'Leash required', hours: 'Always open', ticket: 'Free', phone: '+86 571-8888-2222', description: 'Beautiful lakeside walk with dedicated pet rest areas and water stations.', x: 50, y: 52 },
+      { id: 4, time: '16:30', name: 'Pet-Friendly Café', type: 'meal', petPolicy: 'Friendly', hours: '10:00-22:00', phone: '+86 571-8888-3333', description: 'Cozy café with outdoor seating area where pets are welcome.', x: 48, y: 48 },
+      { id: 5, time: '18:00', name: 'Dinner at Hubin Road Pet Restaurant', type: 'meal', petPolicy: 'Friendly', hours: '11:00-23:00', phone: '+86 571-8888-4444', description: 'Restaurant with pet menu and outdoor dining area.', x: 52, y: 50 },
+    ],
+    2: [
+      { id: 6, time: '08:30', name: 'Prince Bay Park', type: 'attraction', duration: '2.5 hrs', distance: '5 km', petPolicy: 'Leash required', hours: 'Open until 18:00', ticket: 'Free', phone: '+86 571-8888-5555', description: 'Spring flowers and photo-worthy scenery. Pets allowed in designated areas.', x: 55, y: 58 },
+      { id: 7, time: '12:00', name: 'Lunch Break', type: 'meal', x: 58, y: 55 },
+      { id: 8, time: '14:00', name: 'Drive to Yunqi Bamboo Trail', type: 'transport', duration: '30 min', distance: '12 km', x: 60, y: 50 },
+      { id: 9, time: '15:00', name: 'Yunqi Bamboo Trail', type: 'attraction', duration: '2 hrs', petPolicy: 'Friendly', hours: 'Open until 17:00', ticket: '¥8', phone: '+86 571-8888-6666', description: 'Cool bamboo forest trails, perfect for pets. Shaded and comfortable.', x: 70, y: 45 },
+      { id: 10, time: '17:30', name: 'Tea House Rest Stop', type: 'meal', petPolicy: 'Friendly', hours: '09:00-20:00', phone: '+86 571-8888-7777', description: 'Traditional tea house with pet-friendly outdoor seating.', x: 72, y: 48 },
+    ],
+    3: [
+      { id: 11, time: '09:00', name: 'Longjing Village', type: 'attraction', duration: '2 hrs', petPolicy: 'Friendly', hours: 'Always open', ticket: 'Free', phone: '+86 571-8888-8888', description: 'Tea plantation trails where pets can walk alongside you.', x: 62, y: 40 },
+      { id: 12, time: '12:00', name: 'Hotel Check-out', type: 'hotel', x: 45, y: 45 },
+      { id: 13, time: '13:30', name: 'Return to Shanghai', type: 'end', duration: '2 hrs', distance: '180 km', x: 85, y: 50 },
+    ],
   };
 
-  const currentRoute = routeData[`day${selectedDay}` as keyof typeof routeData];
+  const hospitals = [
+    {
+      id: 1,
+      name: 'Zhejiang University Animal Hospital',
+      rating: 4.8,
+      hours: '24 hours',
+      distance: '2.3 km',
+      eta: '8 min',
+      phone: '+86 571-8888-0000',
+      address: 'No. 268 Kaixuan Road, Hangzhou',
+    },
+    {
+      id: 2,
+      name: 'Hangzhou Pet Care Hospital',
+      rating: 4.6,
+      hours: '08:00-22:00',
+      distance: '4.1 km',
+      eta: '12 min',
+      phone: '+86 571-8888-0001',
+      address: 'No. 155 Wensan West Road, Hangzhou',
+    },
+  ];
+
+  const currentRoute = routes[selectedDay] || [];
 
   return (
     <div className="h-screen flex flex-col bg-[var(--cream-white)]">
       {/* Header */}
-      <div className="relative overflow-hidden border-b border-[var(--border)] bg-white">
-        <div className="absolute inset-0 bg-gradient-to-r from-[var(--light-sage)] via-white to-[var(--muted-orange)] opacity-40"></div>
+      <div className="border-b border-[var(--border)] bg-white">
+        <div className="max-w-[1600px] mx-auto px-8 py-6">
+          <button
+            onClick={() => onNavigate?.('planning')}
+            className="mb-4 flex items-center gap-2 px-3 py-1.5 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--deep-blue)] hover:bg-[var(--soft-grey)] transition-all group"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" strokeWidth={2} />
+            <span className="text-sm font-medium">Back to Plan</span>
+          </button>
 
-        <div className="relative px-8 py-6">
-          <div className="max-w-[1600px] mx-auto">
-            {/* Back Button */}
-            <button
-              onClick={() => onNavigate?.('planning')}
-              className="mb-4 flex items-center gap-2 px-4 py-2 rounded-xl text-[var(--deep-blue)] hover:bg-white/60 transition-all duration-300 group"
-            >
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" strokeWidth={2} />
-              <span className="text-sm font-medium">返回行程规划</span>
-            </button>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--sage-green)] to-[var(--warm-orange)] flex items-center justify-center shadow-md">
-                  <Navigation className="w-6 h-6 text-white" strokeWidth={2.5} />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-semibold text-[var(--deep-blue)]">
-                    路线地图 · 空间视图
-                  </h1>
-                  <p className="text-sm text-[var(--muted-foreground)] flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                    查看每日路线和关键点位
-                  </p>
-                </div>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--sage-green)] to-[var(--warm-orange)] flex items-center justify-center">
+                <Navigation className="w-5 h-5 text-white" strokeWidth={2.5} />
               </div>
-
-              {/* Day Selector */}
-              <DaySelector
-                selectedDay={selectedDay}
-                onSelectDay={setSelectedDay}
-                totalDays={3}
-              />
+              <div>
+                <h1 className="text-xl font-semibold text-[var(--deep-blue)]">
+                  {days[selectedDay - 1].label} - {days[selectedDay - 1].date}
+                </h1>
+                <p className="text-sm text-[var(--muted-foreground)] flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                  Trip in progress
+                </p>
+              </div>
             </div>
+
+            <button className="px-4 py-2.5 rounded-lg border border-[var(--border)] bg-white hover:border-[var(--sage-green)] hover:shadow-sm transition-all text-sm font-medium text-[var(--deep-blue)]">
+              Edit Itinerary
+            </button>
+          </div>
+
+          {/* Day Tabs */}
+          <div className="flex gap-2">
+            {days.map((d) => (
+              <button
+                key={d.day}
+                onClick={() => setSelectedDay(d.day)}
+                className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                  selectedDay === d.day
+                    ? 'bg-[var(--sage-green)] text-white shadow-sm'
+                    : 'bg-white text-[var(--deep-blue)] border border-[var(--border)] hover:border-[var(--sage-green)]'
+                }`}
+              >
+                {d.label}
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Info Banner */}
-      <div className="px-8 py-4 bg-gradient-to-r from-blue-50 to-purple-50 border-b border-blue-200">
-        <div className="max-w-[1600px] mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Info className="w-5 h-5 text-blue-500" strokeWidth={2} />
-            <p className="text-sm text-blue-800">
-              点击地图标记查看详情 · 路线已优化通勤时间 · 沿途已定位{' '}
-              <span className="font-semibold">{currentRoute.locations.filter(l => l.type === 'pet-hospital').length}</span>{' '}
-              家宠物医院
+      {/* Warning Banner */}
+      {selectedDay === 2 && (
+        <div className="px-8 py-3 bg-amber-50 border-b border-amber-200">
+          <div className="max-w-[1600px] mx-auto flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0" strokeWidth={2} />
+            <p className="text-sm text-amber-800">
+              <span className="font-semibold">Yunqi Bamboo Trail</span> closes at 5:00 PM. About 45 minutes remaining.
             </p>
           </div>
-
-          <div className="flex items-center gap-4">
-            <div className="px-3 py-1.5 bg-white/80 rounded-lg border border-green-200">
-              <span className="text-sm font-medium text-green-700">
-                {currentRoute.locations.filter(l => l.petFriendly).length} 个宠物友好点位
-              </span>
-            </div>
-            <div className="px-3 py-1.5 bg-white/80 rounded-lg border border-purple-200">
-              <span className="text-sm font-medium text-purple-700">
-                共 {currentRoute.locations.length} 个关键点
-              </span>
-            </div>
-          </div>
         </div>
-      </div>
+      )}
 
       {/* Main Content */}
       <div className="flex-1 overflow-hidden">
         <div className="h-full max-w-[1600px] mx-auto px-8 py-6 flex gap-6">
-          {/* Left: Route List */}
-          <div className="w-96 flex-shrink-0">
-            <RouteList
-              locations={currentRoute.locations}
-              selectedLocation={selectedLocation}
-              onSelectLocation={setSelectedLocation}
-            />
+          {/* Left: Route Timeline */}
+          <div className="w-96 flex-shrink-0 bg-white rounded-xl border border-[var(--border)] p-5 overflow-y-auto">
+            <h3 className="font-semibold text-[var(--deep-blue)] mb-4">Route Timeline</h3>
+            <div className="space-y-3">
+              {currentRoute.map((stop, idx) => (
+                <button
+                  key={stop.id}
+                  onClick={() => stop.type !== 'start' && stop.type !== 'end' && stop.type !== 'transport' && setSelectedPOI(stop)}
+                  className={`w-full text-left p-4 rounded-lg border transition-all ${
+                    selectedPOI?.id === stop.id
+                      ? 'border-[var(--sage-green)] bg-[var(--light-sage)]'
+                      : 'border-[var(--border)] hover:border-[var(--sage-green)]/50 hover:bg-[var(--soft-grey)]'
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                      stop.type === 'hotel' ? 'bg-blue-100' :
+                      stop.type === 'attraction' ? 'bg-green-100' :
+                      stop.type === 'meal' ? 'bg-orange-100' :
+                      'bg-purple-100'
+                    }`}>
+                      {stop.type === 'hotel' && <Building2 className="w-5 h-5 text-blue-600" strokeWidth={2} />}
+                      {stop.type === 'attraction' && <MapPin className="w-5 h-5 text-green-600" strokeWidth={2} />}
+                      {stop.type === 'meal' && <MapPin className="w-5 h-5 text-orange-600" strokeWidth={2} />}
+                      {(stop.type === 'transport' || stop.type === 'start' || stop.type === 'end') && <Navigation className="w-5 h-5 text-purple-600" strokeWidth={2} />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Clock className="w-3.5 h-3.5 text-[var(--muted-foreground)]" strokeWidth={2} />
+                        <span className="text-xs font-medium text-[var(--muted-foreground)]">{stop.time}</span>
+                        {stop.duration && <span className="text-xs text-[var(--muted-foreground)]">• {stop.duration}</span>}
+                      </div>
+                      <h4 className="font-medium text-[var(--deep-blue)] text-sm mb-1 truncate">{stop.name}</h4>
+                      <div className="flex flex-wrap gap-1.5 text-xs">
+                        {stop.distance && (
+                          <span className="px-2 py-0.5 bg-white rounded border border-[var(--border)] text-[var(--muted-foreground)]">
+                            {stop.distance}
+                          </span>
+                        )}
+                        {stop.petPolicy && (
+                          <span className={`px-2 py-0.5 rounded ${
+                            stop.petPolicy === 'Friendly' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+                          }`}>
+                            <PawPrint className="w-3 h-3 inline mr-0.5" strokeWidth={2} />
+                            {stop.petPolicy}
+                          </span>
+                        )}
+                        {stop.hours && (
+                          <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded">
+                            {stop.hours}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Right: Map */}
-          <div className="flex-1 relative">
-            <MapCanvas
-              locations={currentRoute.locations}
-              selectedLocation={selectedLocation}
-              onSelectLocation={setSelectedLocation}
-            />
+          <div className="flex-1 relative bg-white rounded-xl border border-[var(--border)] overflow-hidden">
+            <svg viewBox="0 0 100 100" className="w-full h-full">
+              {/* Map background */}
+              <rect x="0" y="0" width="100" height="100" fill="#F7F6F4" />
+
+              {/* Route path */}
+              {currentRoute.map((stop, idx) => {
+                if (idx === currentRoute.length - 1) return null;
+                const next = currentRoute[idx + 1];
+                return (
+                  <line
+                    key={`line-${stop.id}`}
+                    x1={stop.x}
+                    y1={stop.y}
+                    x2={next.x}
+                    y2={next.y}
+                    stroke="#7A8F73"
+                    strokeWidth="0.3"
+                    strokeDasharray="1,1"
+                  />
+                );
+              })}
+
+              {/* Route pins */}
+              {currentRoute.map((stop, idx) => (
+                <g
+                  key={stop.id}
+                  onClick={() => stop.type !== 'start' && stop.type !== 'end' && stop.type !== 'transport' && setSelectedPOI(stop)}
+                  className={stop.type !== 'start' && stop.type !== 'end' && stop.type !== 'transport' ? 'cursor-pointer' : ''}
+                  style={{ transition: 'transform 0.2s' }}
+                  onMouseEnter={(e) => {
+                    if (stop.type !== 'start' && stop.type !== 'end' && stop.type !== 'transport') {
+                      e.currentTarget.style.transform = 'scale(1.2)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                >
+                  <circle
+                    cx={stop.x}
+                    cy={stop.y}
+                    r="2"
+                    fill={
+                      selectedPOI?.id === stop.id ? '#7A8F73' :
+                      stop.type === 'hotel' ? '#3B82F6' :
+                      stop.type === 'attraction' ? '#10B981' :
+                      stop.type === 'meal' ? '#F59E0B' :
+                      '#9CA3AF'
+                    }
+                    stroke="white"
+                    strokeWidth="0.5"
+                  />
+                  <text
+                    x={stop.x}
+                    y={stop.y - 3}
+                    textAnchor="middle"
+                    fontSize="2"
+                    fill="#2C3E50"
+                    fontWeight="500"
+                  >
+                    {idx + 1}
+                  </text>
+                </g>
+              ))}
+            </svg>
           </div>
         </div>
       </div>
 
-      {/* Location Detail Card */}
-      {selectedLocation && selectedLocation.type !== 'start' && selectedLocation.type !== 'end' && (
-        <LocationCard
-          location={selectedLocation}
-          onClose={() => setSelectedLocation(null)}
-        />
+      {/* Quick Actions */}
+      <div className="border-t border-[var(--border)] bg-white px-8 py-4">
+        <div className="max-w-[1600px] mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowHospitalPanel(true)}
+              className="px-4 py-2.5 rounded-lg border-2 border-green-600 text-green-600 font-medium hover:bg-green-50 transition-all flex items-center gap-2"
+            >
+              <Shield className="w-4 h-4" strokeWidth={2} />
+              <span>Pet Hospital</span>
+            </button>
+            <button className="px-4 py-2.5 rounded-lg border border-[var(--border)] bg-white hover:border-[var(--sage-green)] hover:shadow-sm transition-all flex items-center gap-2 font-medium text-[var(--deep-blue)]">
+              <Play className="w-4 h-4" strokeWidth={2} />
+              <span>Start Navigation</span>
+            </button>
+            <button
+              onClick={() => onNavigate?.('emergency')}
+              className="px-4 py-2.5 rounded-lg border border-amber-500 text-amber-600 font-medium hover:bg-amber-50 transition-all flex items-center gap-2"
+            >
+              <AlertCircle className="w-4 h-4" strokeWidth={2} />
+              <span>Emergency Help</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* POI Detail Card */}
+      {selectedPOI && (
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-8">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+            <div className="p-6 border-b border-[var(--border)]">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold text-[var(--deep-blue)] mb-1">{selectedPOI.name}</h3>
+                  <div className="flex items-center gap-2 text-sm text-[var(--muted-foreground)]">
+                    <Clock className="w-4 h-4" strokeWidth={2} />
+                    <span>{selectedPOI.hours}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedPOI(null)}
+                  className="w-8 h-8 rounded-lg hover:bg-[var(--soft-grey)] flex items-center justify-center transition-colors"
+                >
+                  <X className="w-5 h-5 text-[var(--muted-foreground)]" strokeWidth={2} />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6 space-y-4">
+              {selectedPOI.description && (
+                <p className="text-sm text-[var(--muted-foreground)] leading-relaxed">{selectedPOI.description}</p>
+              )}
+
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                {selectedPOI.ticket && (
+                  <div className="p-3 rounded-lg bg-[var(--soft-grey)]">
+                    <p className="text-xs text-[var(--muted-foreground)] mb-1">Ticket Price</p>
+                    <p className="font-semibold text-[var(--deep-blue)]">{selectedPOI.ticket}</p>
+                  </div>
+                )}
+                {selectedPOI.petPolicy && (
+                  <div className="p-3 rounded-lg bg-[var(--soft-grey)]">
+                    <p className="text-xs text-[var(--muted-foreground)] mb-1">Pet Policy</p>
+                    <p className="font-semibold text-[var(--deep-blue)]">
+                      <PawPrint className="w-3.5 h-3.5 inline mr-1" strokeWidth={2} />
+                      {selectedPOI.petPolicy}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {selectedPOI.phone && (
+                <div className="p-3 rounded-lg bg-[var(--soft-grey)]">
+                  <div className="flex items-center gap-2 text-sm">
+                    <Phone className="w-4 h-4 text-[var(--sage-green)]" strokeWidth={2} />
+                    <span className="text-[var(--muted-foreground)]">Phone:</span>
+                    <span className="font-medium text-[var(--deep-blue)]">{selectedPOI.phone}</span>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex gap-3 pt-2">
+                <button className="flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-[var(--sage-green)] to-[var(--warm-orange)] text-white font-medium shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                  <Play className="w-4 h-4" strokeWidth={2} />
+                  <span>Start Navigation</span>
+                </button>
+                <button className="px-4 py-3 rounded-lg border-2 border-[var(--sage-green)] text-[var(--sage-green)] font-medium hover:bg-[var(--light-sage)] transition-all flex items-center justify-center gap-2">
+                  <Phone className="w-4 h-4" strokeWidth={2} />
+                  <span>Call</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Hospital Panel */}
+      {showHospitalPanel && (
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-8">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden">
+            <div className="p-6 border-b border-[var(--border)] bg-gradient-to-br from-green-50 to-white">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
+                    <Shield className="w-5 h-5 text-green-600" strokeWidth={2} />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-[var(--deep-blue)]">Nearby Pet Hospitals</h3>
+                    <p className="text-sm text-[var(--muted-foreground)]">Emergency veterinary care</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowHospitalPanel(false)}
+                  className="w-8 h-8 rounded-lg hover:bg-white flex items-center justify-center transition-colors"
+                >
+                  <X className="w-5 h-5 text-[var(--muted-foreground)]" strokeWidth={2} />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6 space-y-4">
+              {hospitals.map((hospital) => (
+                <div key={hospital.id} className="p-5 rounded-xl border border-[var(--border)] hover:border-green-500 hover:shadow-sm transition-all">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-[var(--deep-blue)] mb-1">{hospital.name}</h4>
+                      <div className="flex items-center gap-2 text-sm text-[var(--muted-foreground)] mb-2">
+                        <Star className="w-4 h-4 fill-amber-400 text-amber-400" strokeWidth={2} />
+                        <span className="font-medium">{hospital.rating}</span>
+                      </div>
+                      <p className="text-sm text-[var(--muted-foreground)]">{hospital.address}</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3 mb-4 text-sm">
+                    <div className="p-2 rounded-lg bg-[var(--soft-grey)]">
+                      <p className="text-xs text-[var(--muted-foreground)] mb-0.5">Hours</p>
+                      <p className="font-medium text-[var(--deep-blue)]">{hospital.hours}</p>
+                    </div>
+                    <div className="p-2 rounded-lg bg-[var(--soft-grey)]">
+                      <p className="text-xs text-[var(--muted-foreground)] mb-0.5">Distance</p>
+                      <p className="font-medium text-[var(--deep-blue)]">{hospital.distance}</p>
+                    </div>
+                    <div className="p-2 rounded-lg bg-[var(--soft-grey)]">
+                      <p className="text-xs text-[var(--muted-foreground)] mb-0.5">ETA</p>
+                      <p className="font-medium text-[var(--deep-blue)]">{hospital.eta}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <button className="flex-1 px-4 py-2.5 rounded-lg border-2 border-green-600 text-green-600 font-medium hover:bg-green-50 transition-all flex items-center justify-center gap-2">
+                      <Phone className="w-4 h-4" strokeWidth={2} />
+                      <span>Call Now</span>
+                    </button>
+                    <button className="flex-1 px-4 py-2.5 rounded-lg bg-gradient-to-r from-[var(--sage-green)] to-[var(--warm-orange)] text-white font-medium shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                      <Navigation className="w-4 h-4" strokeWidth={2} />
+                      <span>Navigate</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

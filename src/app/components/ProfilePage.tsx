@@ -31,10 +31,10 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--cream-white)] via-[var(--light-sage)] to-[var(--muted-orange)] flex items-center justify-center p-8">
-      <div className="w-full max-w-2xl">
+      <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-3 mb-4">
+          <div className="inline-flex items-center gap-3 mb-3">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--sage-green)] to-[var(--warm-orange)] flex items-center justify-center shadow-lg">
               <Sparkles className="w-6 h-6 text-white" strokeWidth={2.5} />
             </div>
@@ -43,7 +43,7 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
             </h1>
           </div>
           <p className="text-[var(--muted-foreground)]">
-            Plan smarter trips with your pet
+            Plan safer, smarter trips with your pet
           </p>
         </div>
 
@@ -54,13 +54,13 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
             <div className="flex gap-2">
               <button
                 onClick={() => setMode('login')}
-                className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                className={`flex-1 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
                   mode === 'login'
                     ? 'bg-white text-[var(--deep-blue)] shadow-sm'
                     : 'text-[var(--muted-foreground)] hover:text-[var(--deep-blue)]'
                 }`}
               >
-                Sign In
+                Log In
               </button>
               <button
                 onClick={() => setMode('register')}
@@ -172,28 +172,7 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
                       value={formData.breed}
                       onChange={(e) => setFormData({ ...formData, breed: e.target.value })}
                       placeholder="Breed"
-                      className="w-full px-4 py-3 rounded-lg border border-[var(--border)] bg-[var(--soft-grey)] focus:outline-none focus:ring-2 focus:ring-[var(--sage-green)]/30 focus:border-[var(--sage-green)] transition-all"
-                    />
-                    <input
-                      type="text"
-                      value={formData.age}
-                      onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                      placeholder="Age (years)"
-                      className="w-full px-4 py-3 rounded-lg border border-[var(--border)] bg-[var(--soft-grey)] focus:outline-none focus:ring-2 focus:ring-[var(--sage-green)]/30 focus:border-[var(--sage-green)] transition-all"
-                    />
-                    <input
-                      type="text"
-                      value={formData.weight}
-                      onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
-                      placeholder="Weight (kg)"
                       className="col-span-2 w-full px-4 py-3 rounded-lg border border-[var(--border)] bg-[var(--soft-grey)] focus:outline-none focus:ring-2 focus:ring-[var(--sage-green)]/30 focus:border-[var(--sage-green)] transition-all"
-                    />
-                    <textarea
-                      value={formData.healthNotes}
-                      onChange={(e) => setFormData({ ...formData, healthNotes: e.target.value })}
-                      placeholder="Health notes (optional)"
-                      rows={2}
-                      className="col-span-2 w-full px-4 py-3 rounded-lg border border-[var(--border)] bg-[var(--soft-grey)] focus:outline-none focus:ring-2 focus:ring-[var(--sage-green)]/30 focus:border-[var(--sage-green)] transition-all resize-none"
                     />
                   </div>
                 </div>
@@ -206,7 +185,7 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
                 type="submit"
                 className="w-full px-6 py-3.5 rounded-xl bg-gradient-to-r from-[var(--sage-green)] to-[var(--warm-orange)] text-white font-medium shadow-md hover:shadow-lg transition-all"
               >
-                {mode === 'login' ? 'Sign In' : 'Create Account'}
+                {mode === 'login' ? 'Log In' : 'Create Account'}
               </button>
 
               <button

@@ -6,9 +6,11 @@ import { LoadingPlanningPage } from './components/LoadingPlanningPage';
 import { PlanningResultPage } from './components/PlanningResultPage';
 import { MapRoutePage } from './components/MapRoutePage';
 import { EmergencyReplanPage } from './components/EmergencyReplanPage';
+import { SettingsPage } from './components/SettingsPage';
+import { TripReviewPage } from './components/TripReviewPage';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'profile' | 'home' | 'info' | 'loading' | 'planning' | 'map' | 'emergency'>('home');
+  const [currentView, setCurrentView] = useState<'profile' | 'home' | 'info' | 'loading' | 'planning' | 'map' | 'emergency' | 'settings' | 'review'>('profile');
 
   // Route to different pages
   if (currentView === 'profile') {
@@ -37,6 +39,14 @@ export default function App() {
 
   if (currentView === 'emergency') {
     return <EmergencyReplanPage onNavigate={(view) => setCurrentView(view as any)} />;
+  }
+
+  if (currentView === 'settings') {
+    return <SettingsPage onNavigate={(view) => setCurrentView(view as any)} />;
+  }
+
+  if (currentView === 'review') {
+    return <TripReviewPage onNavigate={(view) => setCurrentView(view as any)} />;
   }
 
   return null;
