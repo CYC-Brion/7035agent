@@ -3,14 +3,14 @@
 :root {
   --font-size: 16px;
 
-  /* Custom Brand Colors - Pet Travel Agent */
+  /* Brand Colors - Professional Travel SaaS */
   --cream-white: #FDFCF9;
-  --sage-green: #8B9D83;
-  --warm-orange: #E8A87C;
-  --deep-blue: #3A4F5C;
-  --soft-grey: #F5F4F1;
+  --sage-green: #7A8F73;
+  --warm-orange: #D4915D;
+  --deep-blue: #2C3E50;
+  --soft-grey: #F7F6F4;
   --light-sage: #E8EDE6;
-  --muted-orange: #F5DCC8;
+  --muted-orange: #F0D9C5;
 
   --background: var(--cream-white);
   --foreground: var(--deep-blue);
